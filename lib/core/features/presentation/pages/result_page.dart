@@ -20,11 +20,13 @@ class ResultPage extends ConsumerWidget {
             'Tingkat risiko Anda tinggi. Pertimbangkan berbicara dengan konselor atau psikolog.';
         extraAdvice = 'Kurangi stres dan perbanyak waktu istirahat.';
         break;
+
       case 'Sedang':
         recommendation =
             'Tingkat risiko sedang. Jaga keseimbangan antara aktivitas dan istirahat.';
         extraAdvice = 'Luangkan waktu untuk tidur cukup dan lakukan relaksasi.';
         break;
+
       default:
         recommendation =
             'Tingkat risiko rendah. Kondisi Anda baik, pertahankan kebiasaan positif.';
@@ -32,8 +34,10 @@ class ResultPage extends ConsumerWidget {
             'Teruskan rutinitas sehat dan tetap terhubung dengan orang lain.';
     }
 
-    // 🔹 Pop-up rekomendasi otomatis
-    Future.microtask(() {
+    // 🔹 Pop-up rekomendasi otomatis (AMAAAN)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -65,13 +69,16 @@ class ResultPage extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
+
             Text(
               'Tingkat Risiko: $riskLevel',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge!.copyWith(color: Colors.indigo),
             ),
+
             const SizedBox(height: 24),
+
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -84,7 +91,9 @@ class ResultPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
+
             const Spacer(),
+
             const Text(
               'Disclaimer: InsightMind bersifat edukatif, bukan alat diagnosis medis.',
               textAlign: TextAlign.center,
