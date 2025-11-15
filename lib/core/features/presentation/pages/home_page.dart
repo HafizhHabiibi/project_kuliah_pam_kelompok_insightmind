@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../pages/screening_page.dart';
+import '../pages/history_page.dart'; // 🔹 Tambahan
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -23,7 +24,7 @@ class HomePage extends ConsumerWidget {
             ),
             const SizedBox(height: 30),
 
-            // 🔹 Tombol dengan warna khusus
+            // 🔹 Tombol Screening
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -49,6 +50,7 @@ class HomePage extends ConsumerWidget {
             ),
 
             const SizedBox(height: 20),
+
             // 🔹 Quick Start
             OutlinedButton(
               onPressed: () {
@@ -61,6 +63,23 @@ class HomePage extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Text('Quick Start / Masuk ke Screening'),
               ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // 🔹 Tombol Riwayat Screening (NEW)
+            OutlinedButton.icon(
+              icon: const Icon(Icons.history),
+              label: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text('Lihat Riwayat Screening'),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HistoryPage()),
+                );
+              },
             ),
           ],
         ),
