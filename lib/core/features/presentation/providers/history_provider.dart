@@ -13,7 +13,9 @@ class HistoryNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   Future<void> _loadHistory() async {
     final box = await Hive.openBox(_boxName);
     final data = box.get('history', defaultValue: []);
-    state = List<Map<String, dynamic>>.from(data);
+    state = (data as List)
+        .map((item) => Map<String, dynamic>.from(item as Map))
+        .toList();
   }
 
   /// 🔹 Menambah data screening ke history
