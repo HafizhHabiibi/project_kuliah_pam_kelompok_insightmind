@@ -439,17 +439,21 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
       ),
       child: Row(
         children: [
-          if (_currentPage > 0)
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _previousPage,
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Sebelumnya'),
+          Expanded(
+            child: Opacity(
+              opacity: _currentPage > 0 ? 1 : 0,
+              child: IgnorePointer(
+                ignoring: _currentPage == 0,
+                child: OutlinedButton.icon(
+                  onPressed: _previousPage,
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Sebelumnya'),
+                ),
               ),
             ),
-          if (_currentPage > 0) const SizedBox(width: 12),
+          ),
+          const SizedBox(width: 12),
           Expanded(
-            flex: 2,
             child: _currentPage == defaultQuestions.length - 1
                 ? CustomButton(
                     text: 'Lihat Hasil',
