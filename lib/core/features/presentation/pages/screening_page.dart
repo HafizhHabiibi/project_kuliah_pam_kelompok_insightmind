@@ -27,6 +27,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
+    _animController.forward();
   }
 
   @override
