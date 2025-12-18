@@ -512,11 +512,16 @@ class HistoryPage extends ConsumerWidget {
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
+        title: Row(
+          children: const [
             Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
             SizedBox(width: 12),
-            Text('Hapus Semua Riwayat'),
+            Expanded(
+              child: Text(
+                'Hapus Semua Riwayat',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         content: const Text(

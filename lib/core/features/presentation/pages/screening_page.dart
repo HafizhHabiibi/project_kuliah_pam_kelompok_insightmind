@@ -527,11 +527,16 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.summarize, color: AppTheme.primaryColor),
-            SizedBox(width: 12),
-            Text('Ringkasan Jawaban'),
+            const Icon(Icons.summarize, color: AppTheme.primaryColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Ringkasan Jawaban',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
           ],
         ),
         content: SizedBox(
