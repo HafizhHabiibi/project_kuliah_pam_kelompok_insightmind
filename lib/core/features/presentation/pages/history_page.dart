@@ -25,7 +25,9 @@ class HistoryPage extends ConsumerWidget {
         ),
         child: CustomScrollView(
           slivers: [
-            // App Bar
+            // =======================
+            // APP BAR
+            // =======================
             SliverAppBar(
               expandedHeight: 140,
               pinned: true,
@@ -88,7 +90,9 @@ class HistoryPage extends ConsumerWidget {
               ),
             ),
 
-            // Statistics Card
+            // =======================
+            // STATISTIK
+            // =======================
             if (history.isNotEmpty)
               SliverToBoxAdapter(
                 child: Padding(
@@ -97,7 +101,9 @@ class HistoryPage extends ConsumerWidget {
                 ),
               ),
 
-            // History List
+            // =======================
+            // LIST RIWAYAT
+            // =======================
             if (history.isEmpty)
               SliverFillRemaining(
                 child: EmptyState(
@@ -111,7 +117,7 @@ class HistoryPage extends ConsumerWidget {
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 100),
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 140),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final item = history[history.length - 1 - index];
@@ -127,23 +133,75 @@ class HistoryPage extends ConsumerWidget {
           ],
         ),
       ),
+
+      // =======================
+      // FAB
+      // =======================
       floatingActionButton: history.isNotEmpty
-          ? FloatingActionButton.extended(
-              onPressed: () => _showDeleteAllDialog(context, ref),
-              backgroundColor: AppTheme.errorColor,
-              icon: const Icon(Icons.delete_sweep),
-              label: const Text('Hapus Semua'),
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton.extended(
+                  heroTag: 'print_pdf',
+                  onPressed: () => _printPdf(context, ref, history),
+                  icon: const Icon(Icons.picture_as_pdf),
+                  label: const Text('Cetak PDF'),
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton.extended(
+                  heroTag: 'delete_all',
+                  onPressed: () => _showDeleteAllDialog(context, ref),
+                  backgroundColor: AppTheme.errorColor,
+                  icon: const Icon(Icons.delete_sweep),
+                  label: const Text('Hapus Semua'),
+                ),
+              ],
             )
           : null,
     );
   }
 
+  // =======================
+  // CETAK PDF
+  // =======================
+  Future<void> _printPdf(
+    BuildContext context,
+    WidgetRef ref,
+    List<Map<String, dynamic>> history,
+  ) async {
+    // Delegate to centralized exporter to avoid duplication
+    await _exportHistory(context, ref, history);
+  }
+
+  // Centralized export helper to avoid duplicating code across UI
+  Future<void> _exportHistory(
+    BuildContext context,
+    WidgetRef ref,
+    List<Map<String, dynamic>> history,
+  ) async {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(const SnackBar(content: Text('Membuat rekap laporan...')));
+    try {
+      final bytes = await ref.read(reportServiceProvider).generateHistoryReport(history: history);
+      await ref.read(reportServiceProvider).sharePdf(
+        bytes,
+        filename: 'rekap_${DateTime.now().toIso8601String()}.pdf',
+      );
+      scaffold.showSnackBar(const SnackBar(content: Text('Rekap berhasil dibagikan/disimpan.')));
+    } catch (e) {
+      scaffold.showSnackBar(SnackBar(content: Text('Gagal membuat rekap: $e')));
+    }
+  }
+
+  // =======================
+  // STATISTICS CARD (DITAMBAH DISTRIBUSI RISIKO)
+  // =======================
   Widget _buildStatisticsCard(BuildContext context, WidgetRef ref, List<Map<String, dynamic>> history) {
     // Calculate statistics
     final scores = history.map((h) => (h['score'] as num).toInt()).toList();
     final avgScore = scores.reduce((a, b) => a + b) / scores.length;
 
-    final riskCounts = <String, int>{};
+    final Map<String, int> riskCounts = {};
     for (final item in history) {
       final risk = item['result']?.toString() ?? 'Unknown';
       riskCounts[risk] = (riskCounts[risk] ?? 0) + 1;
@@ -164,6 +222,8 @@ class HistoryPage extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
+
+          /// TOTAL & RATA-RATA
           Row(
             children: [
               Expanded(
@@ -185,48 +245,30 @@ class HistoryPage extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+
+          const SizedBox(height: 20),
           const Divider(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+
+          /// DISTRIBUSI RISIKO
           const Text(
             'Distribusi Risiko',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppTheme.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+
           ...riskCounts.entries.map((entry) {
-            final percentage = (entry.value / history.length * 100).toInt();
-            final color = _getRiskColor(entry.key);
+            final percent = ((entry.value / history.length) * 100)
+                .toStringAsFixed(0);
+
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
+                  Icon(Icons.circle, size: 10, color: _getRiskColor(entry.key)),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      entry.key,
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                  ),
-                  Text(
-                    '${entry.value}x ($percentage%)',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: color,
-                    ),
-                  ),
+                  Expanded(child: Text(entry.key)),
+                  Text('${entry.value}x ($percent%)'),
                 ],
               ),
             );
@@ -234,20 +276,7 @@ class HistoryPage extends ConsumerWidget {
           const SizedBox(height: 12),
           Center(
             child: OutlinedButton.icon(
-              onPressed: () async {
-                final scaffold = ScaffoldMessenger.of(context);
-                scaffold.showSnackBar(const SnackBar(content: Text('Membuat rekap laporan...')));
-                try {
-                  final bytes = await ref.read(reportServiceProvider).generateHistoryReport(history: history);
-                  await ref.read(reportServiceProvider).sharePdf(
-                    bytes,
-                    filename: 'rekap_${DateTime.now().toIso8601String()}.pdf',
-                  );
-                  scaffold.showSnackBar(const SnackBar(content: Text('Rekap berhasil dibagikan/disimpan.')));
-                } catch (e) {
-                  scaffold.showSnackBar(SnackBar(content: Text('Gagal membuat rekap: $e')));
-                }
-              },
+              onPressed: () => _exportHistory(context, ref, history),
               icon: const Icon(Icons.download),
               label: const Text('Ekspor Rekap (PDF)'),
             ),
@@ -257,6 +286,9 @@ class HistoryPage extends ConsumerWidget {
     );
   }
 
+  // =======================
+  // STAT ITEM
+  // =======================
   Widget _buildStatItem(
     String label,
     String value,
@@ -291,6 +323,9 @@ class HistoryPage extends ConsumerWidget {
     );
   }
 
+  // =======================
+  // HISTORY CARD (ASLI)
+  // =======================
   Widget _buildHistoryCard(
     BuildContext context,
     WidgetRef ref,
@@ -386,10 +421,9 @@ class HistoryPage extends ConsumerWidget {
                   label: const Text('Detail'),
                 ),
                 IconButton(
-                  onPressed: () => _showDeleteDialog(context, ref, index),
+                  onPressed: () => _showDeleteDialog(context, ref, item),
                   icon: const Icon(Icons.delete_outline),
                   color: AppTheme.errorColor,
-                  tooltip: 'Hapus',
                 ),
               ],
             ),
@@ -399,6 +433,9 @@ class HistoryPage extends ConsumerWidget {
     );
   }
 
+  // =======================
+  // DIALOG & UTIL
+  // =======================
   void _showDetailDialog(
     BuildContext context,
     Map<String, dynamic> item,
@@ -430,7 +467,6 @@ class HistoryPage extends ConsumerWidget {
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
               _buildDetailRow('Tanggal', formattedDate, Icons.calendar_today),
               const SizedBox(height: 12),
@@ -443,10 +479,7 @@ class HistoryPage extends ConsumerWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              Text(
-                recommendation,
-                style: const TextStyle(fontSize: 14, height: 1.5),
-              ),
+              Text(recommendation),
             ],
           ),
         ),
@@ -490,18 +523,11 @@ class HistoryPage extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref, int index) {
+  void _showDeleteDialog(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.delete_forever, color: AppTheme.errorColor),
-            SizedBox(width: 12),
-            Text('Hapus Riwayat'),
-          ],
-        ),
+        title: const Text('Hapus Riwayat'),
         content: const Text('Hapus riwayat screening ini?'),
         actions: [
           TextButton(
@@ -510,16 +536,13 @@ class HistoryPage extends ConsumerWidget {
           ),
           FilledButton(
             onPressed: () async {
-              await ref.read(historyProvider.notifier).removeAt(index);
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Riwayat berhasil dihapus'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+              // Recompute index at deletion time to avoid stale-index bugs
+              final current = ref.read(historyProvider);
+              final idx = current.indexWhere((h) => h['timestamp'] == item['timestamp']);
+              if (idx != -1) {
+                await ref.read(historyProvider.notifier).removeAt(idx);
               }
+              if (context.mounted) Navigator.pop(context);
             },
             style: FilledButton.styleFrom(backgroundColor: AppTheme.errorColor),
             child: const Text('Hapus'),
@@ -533,18 +556,8 @@ class HistoryPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: AppTheme.errorColor),
-            SizedBox(width: 12),
-            Text('Hapus Semua Riwayat'),
-          ],
-        ),
-        content: const Text(
-          'Anda yakin ingin menghapus semua riwayat screening? '
-          'Tindakan ini tidak dapat dibatalkan.',
-        ),
+        title: const Text('Hapus Semua Riwayat'),
+        content: const Text('Semua data akan dihapus. Lanjutkan?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -553,15 +566,7 @@ class HistoryPage extends ConsumerWidget {
           FilledButton(
             onPressed: () async {
               await ref.read(historyProvider.notifier).clear();
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Semua riwayat berhasil dihapus'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
+              if (context.mounted) Navigator.pop(context);
             },
             style: FilledButton.styleFrom(backgroundColor: AppTheme.errorColor),
             child: const Text('Hapus Semua'),
