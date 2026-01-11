@@ -5,6 +5,7 @@ import 'package:tugas_dari_ppt/core/widgets/custom_widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/history_provider.dart';
+import '../../reporting/report_provider.dart';
 
 class HistoryPage extends ConsumerWidget {
   const HistoryPage({super.key});
@@ -47,7 +48,7 @@ class HistoryPage extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withAlpha((0.2 * 255).round()),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
@@ -92,7 +93,7 @@ class HistoryPage extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: _buildStatisticsCard(history),
+                  child: _buildStatisticsCard(context, ref, history),
                 ),
               ),
 
@@ -137,7 +138,7 @@ class HistoryPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatisticsCard(List<Map<String, dynamic>> history) {
+  Widget _buildStatisticsCard(BuildContext context, WidgetRef ref, List<Map<String, dynamic>> history) {
     // Calculate statistics
     final scores = history.map((h) => (h['score'] as num).toInt()).toList();
     final avgScore = scores.reduce((a, b) => a + b) / scores.length;
@@ -229,7 +230,28 @@ class HistoryPage extends ConsumerWidget {
                 ],
               ),
             );
-          }).toList(),
+          }),
+          const SizedBox(height: 12),
+          Center(
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                final scaffold = ScaffoldMessenger.of(context);
+                scaffold.showSnackBar(const SnackBar(content: Text('Membuat rekap laporan...')));
+                try {
+                  final bytes = await ref.read(reportServiceProvider).generateHistoryReport(history: history);
+                  await ref.read(reportServiceProvider).sharePdf(
+                    bytes,
+                    filename: 'rekap_${DateTime.now().toIso8601String()}.pdf',
+                  );
+                  scaffold.showSnackBar(const SnackBar(content: Text('Rekap berhasil dibagikan/disimpan.')));
+                } catch (e) {
+                  scaffold.showSnackBar(SnackBar(content: Text('Gagal membuat rekap: $e')));
+                }
+              },
+              icon: const Icon(Icons.download),
+              label: const Text('Ekspor Rekap (PDF)'),
+            ),
+          ),
         ],
       ),
     );
@@ -246,7 +268,7 @@ class HistoryPage extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha((0.1 * 255).round()),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 24),
@@ -303,7 +325,7 @@ class HistoryPage extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withAlpha((0.1 * 255).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 24),
@@ -337,7 +359,7 @@ class HistoryPage extends ConsumerWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withAlpha((0.1 * 255).round()),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -396,7 +418,7 @@ class HistoryPage extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(_getRiskIcon(result), color: color),

@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import '../providers/score_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/questionnaire_provider.dart';
+import '../../reporting/report_provider.dart';
 
 class ResultPage extends ConsumerStatefulWidget {
   const ResultPage({super.key});
@@ -63,6 +64,7 @@ class _ResultPageState extends ConsumerState<ResultPage>
               recommendation: config.recommendation,
             );
 
+        if (!mounted) return;
         _hasShownDialog = true;
         _showRecommendationDialog(context, config);
       });
@@ -74,7 +76,7 @@ class _ResultPageState extends ConsumerState<ResultPage>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [config.color.withOpacity(0.1), Colors.white],
+            colors: [config.color.withAlpha((0.1 * 255).round()), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -117,7 +119,7 @@ class _ResultPageState extends ConsumerState<ResultPage>
                         const SizedBox(height: 32),
                         _buildDisclaimer(),
                         const SizedBox(height: 24),
-                        _buildActionButtons(context),
+                        _buildActionButtons(context, score, riskLevel, config),
                       ],
                     ),
                   ),
@@ -142,7 +144,7 @@ class _ResultPageState extends ConsumerState<ResultPage>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: config.color.withOpacity(0.3),
+                color: config.color.withAlpha((0.3 * 255).round()),
                 blurRadius: 20,
                 spreadRadius: 5,
               ),
@@ -178,7 +180,7 @@ class _ResultPageState extends ConsumerState<ResultPage>
   Widget _buildRiskLevelCard(RiskConfig config) {
     return GradientCard(
       gradient: LinearGradient(
-        colors: [config.color, config.color.withOpacity(0.7)],
+        colors: [config.color, config.color.withAlpha((0.7 * 255).round())],
       ),
       child: Column(
         children: [
@@ -228,14 +230,52 @@ class _ResultPageState extends ConsumerState<ResultPage>
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
-    return FilledButton(
-      onPressed: () {
-        ref.read(questionnaireProvider.notifier).reset();
-        ref.read(answersProvider.notifier).state = [];
-        Navigator.popUntil(context, (route) => route.isFirst);
-      },
-      child: const Text('Mulai Ulang'),
+  Widget _buildActionButtons(BuildContext context, int score, String riskLevel, RiskConfig config) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: () async {
+                final scaffold = ScaffoldMessenger.of(context);
+                scaffold.showSnackBar(const SnackBar(content: Text('Membuat laporan...')));
+                try {
+                  final history = ref.read(historyProvider);
+                  final bytes = await ref
+                      .read(reportGeneratorProvider)
+                      .generateFrom(
+                        score: score,
+                        riskLevel: riskLevel,
+                        recommendation: config.recommendation,
+                        history: history,
+                      );
+
+                  await ref.read(reportServiceProvider).sharePdf(
+                        bytes,
+                        filename: 'laporan_${DateTime.now().toIso8601String()}.pdf',
+                      );
+
+                  if (context.mounted) scaffold.showSnackBar(const SnackBar(content: Text('Laporan berhasil dibagikan/disimpan.')));
+                } catch (e) {
+                  if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal membuat laporan: $e')));
+                }
+              },
+              icon: const Icon(Icons.picture_as_pdf),
+              label: const Text('Ekspor Laporan (PDF)'),
+            ),
+            const SizedBox(width: 12),
+            FilledButton(
+              onPressed: () {
+                ref.read(questionnaireProvider.notifier).reset();
+                ref.read(answersProvider.notifier).state = [];
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              child: const Text('Mulai Ulang'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -314,7 +354,7 @@ class _ScoreCirclePainter extends CustomPainter {
     final radius = math.min(size.width, size.height) / 2;
 
     final bgPaint = Paint()
-      ..color = color.withOpacity(0.1)
+      ..color = color.withAlpha((0.1 * 255).round())
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12;
 

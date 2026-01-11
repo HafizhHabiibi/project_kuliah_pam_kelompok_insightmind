@@ -19,8 +19,8 @@ final accelerometerStreamProvider = StreamProvider.autoDispose((ref) {
 /// Provider fitur accelerometer (sliding window 50 sampel)
 final accelFeatureProvider =
     StateNotifierProvider<AccelFeatureNotifier, AccelFeature>((ref) {
-  return AccelFeatureNotifier();
-});
+      return AccelFeatureNotifier();
+    });
 
 class AccelFeatureNotifier extends StateNotifier<AccelFeature> {
   AccelFeatureNotifier() : super(AccelFeature(mean: 0, variance: 0)) {
@@ -33,9 +33,7 @@ class AccelFeatureNotifier extends StateNotifier<AccelFeature> {
     accelerometerEventStream().listen((event) {
       // Hitung magnitude percepatan
       final magnitude = sqrt(
-        event.x * event.x +
-        event.y * event.y +
-        event.z * event.z,
+        event.x * event.x + event.y * event.y + event.z * event.z,
       );
 
       // Sliding window 50 sampel
@@ -52,13 +50,15 @@ class AccelFeatureNotifier extends StateNotifier<AccelFeature> {
     final mean = _buffer.reduce((a, b) => a + b) / _buffer.length;
 
     final variance = _buffer.length > 1
-        ? _buffer.fold<double>(
-            0.0,
-            (sum, x) => sum + pow(x - mean, 2),
-          ) /
-            (_buffer.length - 1)
+        ? _buffer.fold<double>(0.0, (sum, x) => sum + pow(x - mean, 2)) /
+              (_buffer.length - 1)
         : 0.0;
 
     state = AccelFeature(mean: mean, variance: variance);
+  }
+
+  void reset() {
+    _buffer.clear();
+    state = AccelFeature(mean: 0, variance: 0);
   }
 }

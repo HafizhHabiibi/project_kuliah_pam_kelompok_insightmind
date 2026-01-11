@@ -47,7 +47,7 @@ class HomePage extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withAlpha((0.2 * 255).round()),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
@@ -161,7 +161,7 @@ class HomePage extends ConsumerWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withAlpha((0.2 * 255).round()),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -188,7 +188,7 @@ class HomePage extends ConsumerWidget {
               Container(
                 width: 1,
                 height: 50,
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withAlpha((0.3 * 255).round()),
               ),
               Expanded(
                 child: _buildStatItem(
@@ -219,7 +219,7 @@ class HomePage extends ConsumerWidget {
         ),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
+          style: TextStyle(color: Colors.white.withAlpha((0.8 * 255).round()), fontSize: 12),
           textAlign: TextAlign.center,
         ),
       ],
@@ -246,7 +246,7 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      color: AppTheme.primaryColor.withAlpha((0.3 * 255).round()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -343,7 +343,7 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.secondaryColor.withOpacity(0.3),
+                      color: AppTheme.secondaryColor.withAlpha((0.3 * 255).round()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -422,9 +422,9 @@ class HomePage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.05),
+        color: AppTheme.primaryColor.withAlpha((0.05 * 255).round()),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.1)),
+        border: Border.all(color: AppTheme.primaryColor.withAlpha((0.1 * 255).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -462,9 +462,9 @@ class HomePage extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.warningColor.withOpacity(0.1),
+              color: AppTheme.warningColor.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.warningColor.withOpacity(0.3)),
+              border: Border.all(color: AppTheme.warningColor.withAlpha((0.3 * 255).round())),
             ),
             child: Row(
               children: [

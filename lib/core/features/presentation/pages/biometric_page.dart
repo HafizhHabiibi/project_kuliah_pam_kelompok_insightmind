@@ -136,7 +136,7 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withAlpha((0.2 * 255).round()),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(
@@ -188,12 +188,35 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
 
                       const SizedBox(height: 24),
 
-                      const Text(
-                        'Data Sensor',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Data Sensor',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (ppg.samples.isNotEmpty || accelFeat.mean != 0)
+                            TextButton.icon(
+                              onPressed: () {
+                                ref.read(ppgProvider.notifier).reset();
+                                ref.read(accelFeatureProvider.notifier).reset();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Data sensor telah direset'),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.refresh, size: 18),
+                              label: const Text('Reset Data'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppTheme.errorColor,
+                              ),
+                            ),
+                        ],
                       ),
 
                       const SizedBox(height: 16),
@@ -232,10 +255,10 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppTheme.warningColor.withOpacity(0.1),
+                            color: AppTheme.warningColor.withAlpha((0.1 * 255).round()),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: AppTheme.warningColor.withOpacity(0.3),
+                              color: AppTheme.warningColor.withAlpha((0.3 * 255).round()),
                             ),
                           ),
                           child: Row(
@@ -277,7 +300,7 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withAlpha((0.2 * 255).round()),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.quiz, color: Colors.white, size: 32),
@@ -322,7 +345,7 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.accentColor.withOpacity(0.1),
+                  color: AppTheme.accentColor.withAlpha((0.1 * 255).round()),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -399,7 +422,7 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.errorColor.withOpacity(0.1),
+                  color: AppTheme.errorColor.withAlpha((0.1 * 255).round()),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -577,9 +600,9 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.05),
+        color: AppTheme.primaryColor.withAlpha((0.05 * 255).round()),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.1)),
+        border: Border.all(color: AppTheme.primaryColor.withAlpha((0.1 * 255).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -628,7 +651,7 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(

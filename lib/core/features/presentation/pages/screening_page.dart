@@ -139,7 +139,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha((0.05 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -265,7 +265,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        color: AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -329,9 +329,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: AppTheme.primaryColor.withOpacity(
-                                      0.3,
-                                    ),
+                                    color: AppTheme.primaryColor.withAlpha((0.3 * 255).round()),
                                     blurRadius: 8,
                                     offset: const Offset(0, 4),
                                   ),
@@ -383,14 +381,14 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
                       ),
                     ),
                   );
-                }).toList(),
+                }),
 
                 if (selected != null) ...[
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.successColor.withOpacity(0.1),
+                      color: AppTheme.successColor.withAlpha((0.1 * 255).round()),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Row(
@@ -431,7 +429,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha((0.05 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -521,7 +519,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
   }
 
   void _showSummaryDialog(BuildContext context, QuestionnaireState qState) {
-    final questions = defaultQuestions;
+    const questions = defaultQuestions;
 
     showDialog(
       context: context,
@@ -559,7 +557,7 @@ class _ScreeningPageState extends ConsumerState<ScreeningPage>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
