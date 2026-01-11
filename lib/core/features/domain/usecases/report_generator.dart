@@ -12,7 +12,7 @@ class ReportGenerator {
       pw.MultiPage(
         build: (context) => [
           pw.Text(
-            'InsightMind – Mental Health Report',
+            'InsightMind Mental Health Report',
             style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 12),
