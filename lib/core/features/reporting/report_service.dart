@@ -30,7 +30,7 @@ class ReportService {
               children: [
                 pw.Text(title, style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 6),
-                pw.Text('Tanggal: $date', style: pw.TextStyle(fontSize: 10)),
+                pw.Text('Tanggal: $date', style: const pw.TextStyle(fontSize: 10)),
                 pw.Divider(),
               ],
             ),
@@ -84,7 +84,7 @@ class ReportService {
               children: [
                 pw.Text(title, style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 6),
-                pw.Text('Tanggal: $date', style: pw.TextStyle(fontSize: 10)),
+                pw.Text('Tanggal: $date', style: const pw.TextStyle(fontSize: 10)),
                 pw.Divider(),
               ],
             ),

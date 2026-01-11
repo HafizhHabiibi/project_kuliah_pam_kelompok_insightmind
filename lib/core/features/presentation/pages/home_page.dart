@@ -295,10 +295,10 @@ class HomePage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Wrap(
+          const Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
+            children: [
               InfoBadge(
                 text: 'Cepat',
                 color: AppTheme.successColor,
@@ -337,7 +337,7 @@ class HomePage extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [AppTheme.secondaryColor, AppTheme.accentColor],
                   ),
                   borderRadius: BorderRadius.circular(14),
@@ -392,10 +392,10 @@ class HomePage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Wrap(
+          const Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
+            children: [
               InfoBadge(
                 text: 'AI Powered',
                 color: AppTheme.secondaryColor,
@@ -429,15 +429,15 @@ class HomePage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline,
                 color: AppTheme.primaryColor,
                 size: 24,
               ),
-              const SizedBox(width: 12),
-              const Text(
+              SizedBox(width: 12),
+              Text(
                 'Tentang InsightMind',
                 style: TextStyle(
                   fontSize: 16,
@@ -466,15 +466,15 @@ class HomePage extends ConsumerWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppTheme.warningColor.withAlpha((0.3 * 255).round())),
             ),
-            child: Row(
+            child: const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.warning_amber_rounded,
                   color: AppTheme.warningColor,
                   size: 20,
                 ),
-                const SizedBox(width: 8),
-                const Expanded(
+                SizedBox(width: 8),
+                Expanded(
                   child: Text(
                     'Disclaimer: Ini bukan alat diagnosis medis. '
                     'Konsultasikan dengan profesional untuk diagnosis yang tepat.',

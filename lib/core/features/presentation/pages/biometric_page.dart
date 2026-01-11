@@ -607,15 +607,15 @@ class _BiometricPageState extends ConsumerState<BiometricPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline,
                 color: AppTheme.primaryColor,
                 size: 20,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8),
+              Text(
                 'Cara Penggunaan',
                 style: TextStyle(
                   fontSize: 16,
