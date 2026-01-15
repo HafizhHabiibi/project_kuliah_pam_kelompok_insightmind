@@ -2,19 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tugas_dari_ppt/core/theme/app_theme.dart';
 import 'package:tugas_dari_ppt/core/widgets/custom_widgets.dart';
-import '../providers/history_provider.dart';
-import 'screening_page.dart';
-import 'biometric_page.dart';
-import 'history_page.dart';
-import 'analytics_dashboard_page.dart';
+
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final score = ref.watch(scoreProvider);
     final history = ref.watch(historyProvider);
-    final score = history.isNotEmpty ? history.last['score'] as int : 0;
 
     return Scaffold(
       body: CustomScrollView(
@@ -105,64 +101,6 @@ class HomePage extends ConsumerWidget {
                 children: [
                   // Stats Card
                   _buildStatsCard(context, score, history.length),
-
-                  const SizedBox(height: 32),
-
-                  // 🔹 Analytics Dashboard Card
-                  GlassCard(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const AnalyticsDashboardPage(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.primaryGradient,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(
-                            Icons.analytics,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Analytics Dashboard',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Ringkasan & tren kesehatan mental',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppTheme.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: AppTheme.primaryColor,
-                        ),
-                      ],
-                    ),
-                  ),
 
                   const SizedBox(height: 32),
 
@@ -276,8 +214,7 @@ class HomePage extends ConsumerWidget {
         ),
         Text(
           label,
-          style: TextStyle(
-              color: Colors.white.withAlpha((0.8 * 255).round()), fontSize: 12),
+          style: TextStyle(color: Colors.white.withAlpha((0.8 * 255).round()), fontSize: 12),
           textAlign: TextAlign.center,
         ),
       ],
@@ -304,8 +241,7 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          AppTheme.primaryColor.withAlpha((0.3 * 255).round()),
+                      color: AppTheme.primaryColor.withAlpha((0.3 * 255).round()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -402,8 +338,7 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          AppTheme.secondaryColor.withAlpha((0.3 * 255).round()),
+                      color: AppTheme.secondaryColor.withAlpha((0.3 * 255).round()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -484,8 +419,7 @@ class HomePage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: AppTheme.primaryColor.withAlpha((0.05 * 255).round()),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-            color: AppTheme.primaryColor.withAlpha((0.1 * 255).round())),
+        border: Border.all(color: AppTheme.primaryColor.withAlpha((0.1 * 255).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -525,8 +459,7 @@ class HomePage extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppTheme.warningColor.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                  color: AppTheme.warningColor.withAlpha((0.3 * 255).round())),
+              border: Border.all(color: AppTheme.warningColor.withAlpha((0.3 * 255).round())),
             ),
             child: const Row(
               children: [
