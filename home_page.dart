@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tugas_dari_ppt/core/theme/app_theme.dart';
 import 'package:tugas_dari_ppt/core/widgets/custom_widgets.dart';
-
-import '../providers/score_provider.dart';
-import '../providers/history_provider.dart';
-import 'screening_page.dart';
-import 'biometric_page.dart';
-import 'history_page.dart';
+import 'package:tugas_dari_ppt/core/features/presentation/providers/score_provider.dart';
+import 'package:tugas_dari_ppt/core/features/presentation/providers/history_provider.dart';
+import 'package:tugas_dari_ppt/core/features/presentation/pages/history_page.dart';
+import 'package:tugas_dari_ppt/core/features/presentation/pages/screening_page.dart';
+import 'package:tugas_dari_ppt/core/features/presentation/pages/biometric_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -47,7 +46,9 @@ class HomePage extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withAlpha((0.2 * 255).round()),
+                                color: Colors.white.withAlpha(
+                                  (0.2 * 255).round(),
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
@@ -219,7 +220,10 @@ class HomePage extends ConsumerWidget {
         ),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withAlpha((0.8 * 255).round()), fontSize: 12),
+          style: TextStyle(
+            color: Colors.white.withAlpha((0.8 * 255).round()),
+            fontSize: 12,
+          ),
           textAlign: TextAlign.center,
         ),
       ],
@@ -246,7 +250,9 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withAlpha((0.3 * 255).round()),
+                      color: AppTheme.primaryColor.withAlpha(
+                        (0.3 * 255).round(),
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -343,7 +349,9 @@ class HomePage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.secondaryColor.withAlpha((0.3 * 255).round()),
+                      color: AppTheme.secondaryColor.withAlpha(
+                        (0.3 * 255).round(),
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -424,18 +432,16 @@ class HomePage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: AppTheme.primaryColor.withAlpha((0.05 * 255).round()),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.primaryColor.withAlpha((0.1 * 255).round())),
+        border: Border.all(
+          color: AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                color: AppTheme.primaryColor,
-                size: 24,
-              ),
+              Icon(Icons.info_outline, color: AppTheme.primaryColor, size: 24),
               SizedBox(width: 12),
               Text(
                 'Tentang InsightMind',
@@ -464,7 +470,9 @@ class HomePage extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppTheme.warningColor.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.warningColor.withAlpha((0.3 * 255).round())),
+              border: Border.all(
+                color: AppTheme.warningColor.withAlpha((0.3 * 255).round()),
+              ),
             ),
             child: const Row(
               children: [
