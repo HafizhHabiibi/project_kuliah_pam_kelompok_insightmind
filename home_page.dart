@@ -3,11 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tugas_dari_ppt/core/theme/app_theme.dart';
 import 'package:tugas_dari_ppt/core/widgets/custom_widgets.dart';
 
-import '../providers/score_provider.dart';
-import '../providers/history_provider.dart';
-import 'screening_page.dart';
-import 'biometric_page.dart';
-import 'history_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
