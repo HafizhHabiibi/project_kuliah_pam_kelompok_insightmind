@@ -11,6 +11,9 @@ dependencies:
   
   # State Management
   flutter_riverpod: ^2.4.9
+
+  fl_chart: ^0.66.2
+
   
   # Local Storage
   hive: ^2.2.3
